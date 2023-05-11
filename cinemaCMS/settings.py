@@ -31,9 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    #'adminlte3',
-     # Optional: Django admin theme (must be before django.contrib.admin)
-    #'adminlte3_theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +41,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'phonenumber_field',
     'cinemas.apps.CinemasConfig',
+    'frontend.apps.FrontendConfig'
 ]
 
 MIDDLEWARE = [
