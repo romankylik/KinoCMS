@@ -10,8 +10,8 @@ def get_categories(filter=None):
     else:
         return Category.objects.filter(pk=filter)
 """
-menu = [{'title': "Статистика", 'url': 'baners', 'icon': 'nav-icon fas fa-chart-pie', 'list': []},
-        {'title': "Банера", 'url': 'home', 'icon': 'nav-icon far fa-image', 'list': []},
+menu = [{'title': "Статистика", 'url': 'home', 'icon': 'nav-icon fas fa-chart-pie', 'list': []},
+        {'title': "Банера", 'url': 'baners', 'icon': 'nav-icon far fa-image', 'list': []},
         {'title': "Фільми", 'url': 'baners', 'icon': 'fa-sharp fa-solid fa-film', 'list': ['Додати фільм']},
         {'title': "Кінотеатри", 'url': 'baners', 'icon': 'fa-solid fa-user',
          'list': ['Додати кінотеатр', 'Додати зал']},

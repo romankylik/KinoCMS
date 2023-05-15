@@ -1,0 +1,47 @@
+{% extends 'cinemas/base.html' %}
+{% load bootstrap5 %}
+{% block main_content %}
+     <section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="invoice p-3 mb-3">
+                  <h3 class="fas fa-film"> F i l m</h3>
+                   </div>
+              <div class="card-body">
+                  {# Початок #}
+
+                  {# Початок #}
+                    <form action="{% url 'addfilm' %}" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {% bootstrap_form film_form %}
+                       {% bootstrap_form photo_form %}
+                  <div class="invoice p-3 mb-3">
+                  <h4 class="fas fa-globe"> SEO</h4>
+                      {% bootstrap_form seo_form %}
+                   </div>
+                  {% buttons submit='Добавити' reset="Cancel" %}{% endbuttons %}
+
+</form>
+
+
+
+              </div>
+              <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+{% endblock main_content %}

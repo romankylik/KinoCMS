@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
-    'bootstrap3',
+    'bootstrap5',
     'phonenumber_field',
     'cinemas.apps.CinemasConfig',
     'frontend.apps.FrontendConfig'

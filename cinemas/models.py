@@ -9,12 +9,14 @@ class SEO(models.Model):
 
 class Films(models.Model):
     name = models.CharField(max_length=255, verbose_name="Фільм")
+    content = models.TextField(blank=True, verbose_name="Опис")
     big_photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Головна картинка")
     trailerURL = models.URLField(verbose_name="Трейлер")
-    type1 = models.BooleanField(verbose_name="Тип 2D")
-    type2 = models.BooleanField(verbose_name="Тип 3D")
-    type3 = models.BooleanField(verbose_name="Тип imax")
-    seo = models.OneToOneField('SEO', on_delete=models.CASCADE, related_name="film_key", db_column='seo_key')
+    type1 = models.BooleanField(verbose_name="2D")
+    type2 = models.BooleanField(verbose_name="3D")
+    type3 = models.BooleanField(verbose_name="imax")
+    seo = models.OneToOneField('SEO', on_delete=models.CASCADE)
+    gallery = models.OneToOneField('Gallery', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -22,3 +24,11 @@ class Films(models.Model):
         verbose_name = 'Фільм'
         verbose_name_plural = 'Фільми'
         ordering = ['name']
+
+
+class Gallery(models.Model):
+    name = models.CharField(max_length=255, blank=True, unique=True)
+
+class Photo(models.Model):
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/")
+    gallery = models.ForeignKey('Gallery', on_delete=models.CASCADE)

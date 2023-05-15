@@ -23,6 +23,7 @@ from cinemaCMS import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cinemas.urls')),
+    path('baners/', include('frontend.urls')),
 ]
 
 if settings.DEBUG:
