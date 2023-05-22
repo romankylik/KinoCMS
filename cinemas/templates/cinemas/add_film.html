@@ -1,15 +1,14 @@
 {% extends 'cinemas/base.html' %}
 {% load bootstrap5 %}
-{% block main_content %}
+    {% block content %}
      <section class="content">
-
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
             <!-- Default box -->
             <div class="card">
               <div class="invoice p-3 mb-3">
-                  <h3 class="fas fa-film"> F i l m</h3>
+                  <h3 class="fas fa-film"> {{ title }}</h3>
                    </div>
               <div class="card-body">
                   {# Початок #}
@@ -17,21 +16,107 @@
                   {# Початок #}
                     <form action="{% url 'addfilm' %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
-                      {% bootstrap_form film_form %}
-                       {% bootstrap_form photo_form %}
+
+
+
+
+                        {% bootstrap_form film_form %}
+                    {{ photoset.management_form }}
+
+<div class="card-header">
+<h4 class="card-title">Галерея картинок: </h4>
+
+    <div class="card-body">
+        <div class="row" id="gallery">
+            <div class="card col" id="empy-form">
+                <input type="file" name="form-0-photo" accept="image/*" id="id_form-0-photo">
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <button id="add-more" type="button"> Добавити картинку</button>
+
+
                   <div class="invoice p-3 mb-3">
                   <h4 class="fas fa-globe"> SEO</h4>
                       {% bootstrap_form seo_form %}
                    </div>
-                  {% buttons submit='Добавити' reset="Cancel" %}{% endbuttons %}
+                  {% buttons submit='Добавити фільм' %}{% endbuttons %}
 
-</form>
+                </form>
+              <!-- Скрипт відображення загруженого фото "Головна картинка" -->
+        <script>
+          const status = document.querySelector('div.mb-3 input[type="file"][name="big_photo"]');
+          const conteyner = status.closest('.mb-3');
+
+          if (window.FileList && window.File && window.FileReader) {
+            document.getElementById('id_big_photo').addEventListener('change', event => {
+              const file = event.target.files[0];
+
+              if (!file.type.match('image.*')) {
+                status.textContent = 'Error: The selected file does not appear to be an image.';
+                return;
+              }
+
+              const reader = new FileReader();
+              reader.addEventListener('load', event => {
+                let existing_img = conteyner.querySelector('img');
+
+                if (status && !existing_img) {
+                  let new_img = document.createElement('img');
+                  new_img.src = event.target.result;
+                  new_img.classList.add("form-control");
+                  new_img.style.width = '150px';
+                  new_img.style.height = '150px';
+                  status.classList.remove("mb-3");
+                  status.classList.add("card");
+                  status.parentNode.insertBefore(new_img, status);
+                  console.log(status.querySelector('IMG'));
+                } else {
+                  existing_img.src = event.target.result;
+                }
+              });
+
+              reader.readAsDataURL(file);
+            });
+          }
+        </script>
+                 <!-- Скрипт добавляння нового обєкту в формсет, загрузка фото до галереї" -->
+            <script>
+                const addMoreBtn = document.getElementById('add-more')
+                const totalForm = document.getElementById('id_form-TOTAL_FORMS')
+                addMoreBtn.addEventListener('click', add_new_photo)
+                function add_new_photo(event){
+                    if (event){
+                        event.preventDefault() // зупиняє виконання дефолтних дій події
+                    }
+
+                    const past_form = document.getElementById('gallery')
+                    const amount = document.getElementsByClassName('card col')
+                    const formCount = amount.length
+                    console.log(formCount)
+                    const clone_form = document.getElementById('empy-form').cloneNode(true) //cloneNode(true) клонує елемент з усіма дочірними
+                    clone_form.setAttribute('id', `form-${formCount}`)
+                    const regex = new RegExp('form-0-photo', 'g')
+                    clone_form.innerHTML = clone_form.innerHTML.replace(regex, `form-${formCount}-photo`)
+                    totalForm.setAttribute('value', formCount + 1)
+
+                    past_form.append(clone_form)
+
+                }
 
 
 
-              </div>
+            </script>
+
+
+
+
+   </div>
               <!-- /.card-body -->
-
             </div>
             <!-- /.card -->
           </div>
@@ -44,4 +129,4 @@
 
 
 
-{% endblock main_content %}
+{% endblock content %}

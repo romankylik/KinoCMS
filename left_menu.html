@@ -1,0 +1,12 @@
+          {% for m in menu %}
+
+                <li class="nav-item">
+            <a href="{%  url m.url %}" class="nav-link">
+              <i class="{{ m.icon }}"></i>
+              <p>{{m.title}}</p>
+            </a>
+          </li>
+
+
+           {% endfor %}
+

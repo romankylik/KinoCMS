@@ -1,5 +1,5 @@
 {% extends 'cinemas/base.html' %}
-{% block main_content %}
+{% block content %}
 <form action="{% url 'home' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -13,4 +13,40 @@
 
     <button type="submit">Добавить</button>
 </form>
-{% endblock main_content %}
+    <p id="status"></p>
+    <div class="filtr-item col-sm-2">
+      <img id="output" class="img-fluid mb-2">
+    </div>
+
+   <div class="card">
+  <img src="https://st2.depositphotos.com/3545341/7451/i/450/depositphotos_74516317-stock-photo-ukrainian-girl-with-flag.jpg" class="card-img-top" alt="Image">
+  <div class="card-img-overlay d-flex justify-content-end">
+    <button class="btn btn-danger">Delete</button>
+  </div>
+</div>
+
+<script>
+      const status = document.getElementById('status');
+      const output = document.getElementById('output');
+      if (window.FileList && window.File && window.FileReader) {
+        document.getElementById('id_photo').addEventListener('change', event => {
+          output.src = '';
+          status.textContent = '';
+          const file = event.target.files[0];
+          if (!file.type) {
+            status.textContent = 'Error: The File.type property does not appear to be supported on this browser.';
+            return;
+          }
+          if (!file.type.match('image.*')) {
+            status.textContent = 'Error: The selected file does not appear to be an image.'
+            return;
+          }
+          const reader = new FileReader();
+          reader.addEventListener('load', event => {
+            output.src = event.target.result;
+          });
+          reader.readAsDataURL(file);
+        });
+      }
+    </script>
+{% endblock content %}

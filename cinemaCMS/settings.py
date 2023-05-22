@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-_=bc4290qq&5=8ypf2$#-3hz!@enqou@1_)_**$3z3w!r$#g_*'
+LOGIN_URL='login'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,13 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
     'bootstrap5',
     'phonenumber_field',
     'cinemas.apps.CinemasConfig',
-    'frontend.apps.FrontendConfig'
-]
+    'frontend.apps.FrontendConfig',
+    'users.apps.UsersConfig',
 
+]
+AUTH_USER_MODEL = 'users.AdvUsers'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

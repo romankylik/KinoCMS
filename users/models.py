@@ -1,35 +1,23 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.functions import datetime
 from django.urls import reverse
 
 
-'''# Create your models here.
-class Users(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Ім'я")
-    surname = models.CharField(max_length=255, verbose_name="Прізвище")
-    login = models.CharField(max_length=255, verbose_name="Псевдонім")
-    mail = models.EmailField(max_length=255)
+
+class AdvUsers(AbstractUser):
     town = models.CharField(max_length=255, verbose_name="Місто")
-    #address = models.CharField(max_length=255, verbose_name="Адреса")
-    password = models.CharField(max_length=255, verbose_name="Пароль")
-    #bank_card = models.SmallIntegerField()
+    address = models.CharField(max_length=255, verbose_name="Адреса")
+    bank_card = models.IntegerField(default=0 )
     language = models.CharField(max_length=255, verbose_name="Мова")
     gender = models.CharField(max_length=255, choices=[], verbose_name="Стать")
     phone_number = PhoneNumberField(blank=True)
-    date_birth = models.DateTimeField(default='1999:12:01', verbose_name="Дата народження")
-    date_create = models.DateTimeField(auto_now_add=True, verbose_name="Дата реєстрації")
-
-    def __str__(self):
-        return self.name
-    
-    class Meta:
-        verbose_name = 'Користувач'
-        verbose_name_plural = 'Користувачі'
-        ordering = ['name']
+    date_birth = models.DateTimeField(default='2000-01-01 10:00', verbose_name="Дата народження")
 
 
+'''
 class Tickets(models.Model):
     user = models.ForeignKey('Users', on_delete=models.PROTECT, verbose_name="Клієнт")
     session = models.ForeignKey('Sessions', on_delete=models.PROTECT, verbose_name="Сеанс фільму")

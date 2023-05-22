@@ -10,19 +10,15 @@ def get_categories(filter=None):
     else:
         return Category.objects.filter(pk=filter)
 """
-menu = [{'title': "Статистика", 'url': 'home', 'icon': 'nav-icon fas fa-chart-pie', 'list': []},
-        {'title': "Банера", 'url': 'baners', 'icon': 'nav-icon far fa-image', 'list': []},
-        {'title': "Фільми", 'url': 'baners', 'icon': 'fa-sharp fa-solid fa-film', 'list': ['Додати фільм']},
-        {'title': "Кінотеатри", 'url': 'baners', 'icon': 'fa-solid fa-user',
-         'list': ['Додати кінотеатр', 'Додати зал']},
-        {'title': "Новини", 'url': 'baners', 'icon': 'fa-solid fa-newspaper', 'list': ['Додати новину']},
-        {'title': "Акції", 'url': 'baners', 'icon': 'fa-regular fa-star', 'list': ['Додати акцію']},
-        {'title': "Сторінки", 'url': 'baners', 'icon': 'fa-solid fa-table-list',
-         'list': ['Головна сторінка', "О кінотеатрі"]},
-        {'title': "Користувачі", 'url': 'baners', 'icon': 'fa-solid fa-user',
-         'list': ['Редагувати користувача']},
-        {'title': "Розссилка", 'url': 'baners', 'icon': 'fa-solid fa-envelopes-bulk',
-         'list': ['Вибрати користувача']},
+menu = [{'title': "Статистика", 'url': 'home', 'icon': 'fas fa-chart-pie'},
+        {'title': "Банера", 'url': 'baners', 'icon': 'far fa-image'},
+        {'title': "Фільми", 'url': 'addfilm', 'icon': 'fa-sharp fa-solid fa-film'},
+        {'title': "Кінотеатри", 'url': 'addcinema', 'icon': 'fa-solid fa-user'},
+        {'title': "Новини", 'url': 'baners', 'icon': 'fa-solid fa-newspaper'},
+        {'title': "Акції", 'url': 'baners', 'icon': 'fa-regular fa-star'},
+        {'title': "Сторінки", 'url': 'baners', 'icon': 'fa-solid fa-table-list'},
+        {'title': "Користувачі", 'url': 'edit_users', 'icon': 'fa-solid fa-user'},
+        {'title': "Розссилка", 'url': 'baners', 'icon': 'fa-solid fa-envelopes-bulk'},
         ]
 @register.inclusion_tag('cinemas/left_menu.html', name='left_menu')  # Тег, що містить фрагмент html коду
 def show_left_menu():

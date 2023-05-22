@@ -18,12 +18,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from cinemas.views import *
+from users.views import *
 from cinemaCMS import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cinemas.urls')),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     path('baners/', include('frontend.urls')),
+    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG:
