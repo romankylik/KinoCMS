@@ -1,0 +1,39 @@
+{% extends 'cinemas/base.html' %}
+{% load bootstrap5 %}
+{% block content %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+        {% for head in tbhead %}
+            <th scope="col">{{ head }}</th>
+
+        {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for user in users %}
+        <tr>
+          {% for k,v in user.items %}
+            <td>{{ v }}</td>
+          {% endfor %}
+            <td><button type="submit">
+                <i class="fa-solid fa-pen" title="Edit"></i>
+            </button></td>
+            <td><button type="submit">
+                <i class="fa-solid fa-trash" title="Delit"></i>
+            </button></td>
+
+        </tr>
+      {% endfor %}
+
+    <!-- Додайте інші рядки за потребою -->
+  </tbody>
+
+</table>
+
+
+
+
+
+{% endblock content %}

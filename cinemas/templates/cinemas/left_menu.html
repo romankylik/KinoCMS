@@ -1,9 +1,32 @@
-          {% for m in menu %}
-          <li class="nav-item">
-            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="{%  url m.url %}">
+
+{% for m in menu %}
+    {% if m.list %}
+        <li class="nav-item">
+            <a href="#" class="nav-link active">
               <i class="{{ m.icon }}"></i>
-              <span class="nav-link-text">{{m.title}}</span>
+              <p>
+                {{m.title}}
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+            {% for name,lin in m.list.items %}
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{%  url lin %}" class="nav-link">
+                  <i class="nav-icon far fa-plus-square"></i>
+                  <p>{{ name }}</p>
+                </a>
+              </li>
+            </ul>
+            {% endfor %}
+        </li>
+    {% else %}
+        <li class="nav-item">
+            <a href="{%  url m.url %}" class="nav-link">
+              <i class="{{ m.icon }}"></i>
+              <p>{{m.title}}</p>
             </a>
           </li>
-           {% endfor %}
-
+    {% endif %}
+{% endfor %}

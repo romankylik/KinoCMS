@@ -1,0 +1,27 @@
+{% extends 'cinemas/base.html' %}
+{% load bootstrap5 %}
+{% block content %}
+<div class="container-fluid">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4 class="card-title">Список фільмів</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                    {%  for film in films %}
+                    <div class="col-sm-2" href="">
+                      <a href="{% url 'film_edit' film.id %}">
+                      <img src="{{ film.big_photo.url }}" class="img-fluid mb-2" alt="photo_film">
+                      {{ film.name }}
+                      </a>
+
+                  </div>
+                    {% endfor %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% endblock content %}
+

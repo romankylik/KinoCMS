@@ -3,49 +3,119 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-argon">
-
-  <title>
-    Django Argon Dashboard - {% block title %} Open-Source Admin Panel {% endblock %} | AppSeed
-  </title>
-
-  <!-- Favicon - loaded as static -->
-  <link rel="icon" href="{% static "cinemas/img/brand/favicon.png" %}">
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-  <!-- Icons -->
-  <link rel="stylesheet" href="{% static 'cinemas/css/nucleo.css' %}">
-  <link rel="stylesheet" href="{% static 'cinemas/css/all.min.css' %}">
-  <!-- Page plugins -->
-  <!-- Argon CSS -->
-  <link rel="stylesheet" href="{% static 'cinemas/css/argon.css' %}">
-
-  <!-- Specific CSS goes HERE -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %} Open-Source Admin Panel {% endblock %}</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{% static 'cinemas/fontawesome-free/css/all.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'cinemas/css/adminlte.min.css' %}">
+    <!-- Specific CSS goes HERE -->
+  <link rel="stylesheet" href="{% static 'cinemas/css/my_css.css' %}">
   {% block stylesheets %}{% endblock stylesheets %}
 
 </head>
 
-<body class="">
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
 
-    {% include "cinemas/sidenav.html" %}
+    {% include "cinemas/navbar.html" %}
+    {% include "cinemas/sidebar.html" %}
+<!-- Контент -->
+    <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Starter Page</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Starter Page</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-  <div class="main-content" id="panel">
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
 
-    {% include "cinemas/navigation.html" %}
 
-    {% block content %}{% endblock content %}
 
+        <!-- Перший стовпчик -->
+        {% block content %}{% endblock content %}
+
+
+
+
+
+          <!-- Другий стовпчик -->
+          <!--<div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="m-0">Featured</h5>
+              </div>
+              <div class="card-body">
+                <h6 class="card-title">Special title treatment</h6>
+
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+
+            <div class="card card-primary card-outline">
+              <div class="card-header">
+                <h5 class="m-0">Featured</h5>
+              </div>
+              <div class="card-body">
+                <h6 class="card-title">Special title treatment</h6>
+
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div> -->
+
+
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
   </div>
 
-  {% include "cinemas/scripts.html" %}
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+    <div class="p-3">
+      <h5>Title</h5>
+      <p>Sidebar content</p>
+    </div>
+  </aside>
+    <!-- /.control-sidebar -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+    <!-- To the right -->
+    <div class="float-right d-none d-sm-inline">
+      Anything you want
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+  </footer>
 
   <!-- Specific JS goes HERE -->
-  {% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}{% endblock javascripts %}
+{% include "cinemas/scripts.html" %}
 
-  <script src="{% static 'cinemas/js/js/argon.js' %}"></script>
 
+</div>
 </body>
 
 </html>
