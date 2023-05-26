@@ -67,7 +67,11 @@
                                                     <img src="{{ ph.instance.photo.url}}" style="width: 150px; height: 150px;">
                                                     <button type="button" class="delete-button"><i class="fas fa-times" aria-hidden="true"></i></button>
                                                 </div>
+
                                             {% endfor %}
+                                            <div class="card col" id="form-{{ photoset.total_form_count }}">
+                                                <input type="file" name="form-{{ photoset.total_form_count }}-photo" accept="image/*" id="id_form-{{ photoset.total_form_count }}-photo">
+                                            </div>
                                         {% else %}
                                             <div class="card col" id="form-0">
                                                 <input type="file" name="form-0-photo" accept="image/*" id="id_form-0-photo">
@@ -137,7 +141,6 @@
 <script>
                 const totalForm = document.getElementById('id_form-TOTAL_FORMS')
                 const gallery = document.getElementById('gallery');
-                //const first_form = document.getElementById('id_form-0-photo')
                 const amount = document.getElementsByClassName('card col')
                 const butt = document.getElementsByClassName('delete-button')[0];
 
@@ -145,23 +148,29 @@
                 for (let i = 0; i < amount.length; i++) {
                     img_inp = amount[i].querySelector('input[type="file"]');
                     img_inp.addEventListener('change', handleFileChange);
-                }
+                };
+
+                //вішаємо подію на кожен хрестик видалення в класі 'card col'
+                for (let i = 0; i < amount.length; i++) {
+                  // Отримуємо елемент кнопка
+                  const button = amount[i].querySelector('button');
+                  // Додаємо обробник події натискання на кнопку
+                  button.addEventListener('click', delete_img);
+                };
 
 
-                //first_form.addEventListener('change', handleFileChange);
-                //
+
+                // Функція відображення доданої картинки
                 function handleFileChange(event) {
                     const file = event.target.files[0];
                     let existing_img = event.target.parentNode.querySelector('img');
 
                     const reader2 = new FileReader();
                     reader2.addEventListener('load', event2 => {
-                        const amount = document.getElementsByClassName('card col')
                         const formCount = amount.length
-                        if (existing_img) {  // Якщо div уже містить тег img то тільки обновляю адресу картинки
-                        existing_img.src = event2.target.result;
-                        console.log(formCount == totalForm.value)
-                        if (formCount == totalForm.value){addNewInput()}
+                        if (existing_img) {
+                            // Якщо div уже містить тег img то тільки обновляю адресу картинки
+                            existing_img.src = event2.target.result;
                         }else{
                             addNewInput()
                              /*добавлення та відображення картинки*/
@@ -170,11 +179,14 @@
                             new_img.style.width = '150px';
                             new_img.style.height = '150px';
                             event.target.parentNode.insertBefore(new_img, event.target.nextSibling)
+                            new_butt = butt.cloneNode(true)
+                            new_butt.addEventListener('click', delete_img)
+                            event.target.parentNode.insertBefore(new_butt, event.target.nextSibling)
                         }
                     })
                     reader2.readAsDataURL(file);
                 }
-
+                // Добавлення нового інпуту
                 function addNewInput() {
                     const formCount = amount.length
                     const inputId = `form-${formCount}-photo`;
@@ -191,12 +203,30 @@
                     gallery.append(new_div)
                     totalForm.setAttribute('value', formCount)
                 }
+
+                //Скрипт хрестика для видалення картинки"
+                function delete_img(event) {
+
+                  let parent_tag = event.target.parentNode.parentNode; //.querySelector('input[type="file"]');
+
+                  const hiden_id = parent_tag.querySelector('input[type="hidden"]');
+                  if (hiden_id){gallery.append(hiden_id)};
+                  parent_tag.parentNode.removeChild(parent_tag);
+                  const del = document.createElement('input');
+                  del.type="hidden";
+                  del.name=`form-${hiden_id.id.split("-")[1]}-DELETE`;
+                  //console.log(hiden_id.id.split("-")[1])
+                  del.value="on";
+                  del.id=`id_form-${hiden_id.id.split("-")[1]}-DELETE`;
+                  gallery.append(del)
+
+                };
             </script>
    <!-- Скрипт хрестика для видалення картинки" -->
 <script>
    const divs = document.getElementsByClassName('card col');
 // Перебираємо кожен елемент <div>
-for (let i = 0; i < divs.length; i++) {
+/*for (let i = 0; i < divs.length; i++) {
   const div = divs[i];
   // Отримуємо елемент зображення
   const image = div.querySelector('img');
@@ -205,19 +235,8 @@ for (let i = 0; i < divs.length; i++) {
   // Додаємо обробник події натискання на кнопку
   button.addEventListener('click', delete_img);
     // Видаляємо елемент <div> зображення
-    function delete_img(event) {
-      const hiden = document.getElementById(`id_form-${i}-id`);
-      const del = document.createElement('input');
-      del.type="hidden";
-      del.name=`form-${i}-DELETE`;
-      del.value="on";
-      del.id=`id_form-${i}-DELETE`;
-      gallery.append(hiden)
-      div.parentNode.removeChild(div);
-      gallery.append(del)
 
-  }
-}
+}*/
 </script>
 
                             </div>
