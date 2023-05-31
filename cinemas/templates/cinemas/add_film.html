@@ -22,24 +22,22 @@
                                 {% csrf_token %}
                                 {% bootstrap_field film_form.name %}
                                 {% bootstrap_field film_form.content %}
-                                <div class="mb-3" style="width: 150px;">
-                                    <div class="container-sm" style="width: 105%;">
+                                <div class="row" >
+                                    <div class="card-container col-md-2">
                                         <label class="form-label" for="id_big_photo">Головна картинка</label>
                                         <br>
                                         {% if film_form.instance.big_photo %}
-                                            <img src="{{ film_form.instance.big_photo.url }}" class="form-control" style="width: 150px; height: 150px;">
+                                            <img src="{{ film_form.instance.big_photo.url }}" style="width: 150px; height: 150px;">
+
                                         {% endif %}
-                                        <input type="file" name="big_photo" accept="image/*" class="form-control" title="" id="id_big_photo">
-
-
-
+                                        <input type="file" name="big_photo" accept="image/*" title="" id="id_big_photo">
                                     </div>
                                 </div>
 
 
                                 {% bootstrap_field film_form.trailerURL %}
                                 <div class="mb-3">
-                                    <label class="form-label" for="id_big_photo">Тип кіно</label>
+                                    <label class="form-label">Тип кіно</label>
                                     <br>
                                     <div class="form-check form-check-inline">
                                         {% bootstrap_field film_form.type1 %}
@@ -47,44 +45,37 @@
                                         {% bootstrap_field film_form.type3 %}
                                     </div>
                                 </div>
-
-
                                 <!-- Галерея картинок -->
-                                <div class="card">
+                                <div class="card card-primary">
                                     <div class="card-header">
-                                        <h5 class="m-0">Галерея картинок:</h5>
+                                        <h5 class="card-title">Галерея картинок:</h5>
                                     </div>
                                     <div class="card-body">
-
                                         <div class="row" id="gallery">
                                         {{ photoset.management_form }}
                                     <!-- Перевірка чи вже є завантаженні зображення -->
                                         {% if film_form.instance.gallery and  photoset.total_form_count %}
                                             {% for ph in photoset.forms %}
-                                                <div class="card col" id="form-{{ forloop.counter0 }}">
+                                                <div class="card-container col-md-2" id="form-{{ forloop.counter0 }}">
                                                     {{ ph.id }}
                                                     <input type="file" name="form-{{ forloop.counter0 }}-photo" accept="image/*" id="id_form-{{ forloop.counter0 }}-photo">
-                                                    <img src="{{ ph.instance.photo.url}}" style="width: 150px; height: 150px;">
-                                                    <button type="button" class="delete-button"><i class="fas fa-times" aria-hidden="true"></i></button>
+                                                    <img src="{{ ph.instance.photo.url}}" >
+                                                    <button type="button" class="delete-button"> X </button>
                                                 </div>
-
                                             {% endfor %}
-                                            <div class="card col" id="form-{{ photoset.total_form_count }}">
+                                            <div class="card-container col-md-2" id="form-{{ photoset.total_form_count }}">
                                                 <input type="file" name="form-{{ photoset.total_form_count }}-photo" accept="image/*" id="id_form-{{ photoset.total_form_count }}-photo">
                                             </div>
                                         {% else %}
-                                            <div class="card col" id="form-0">
+                                            <div class="card-container col-md-2" id="form-0">
                                                 <input type="file" name="form-0-photo" accept="image/*" id="id_form-0-photo">
-                                                <button type="button" class="delete-button"><i class="fas fa-times" aria-hidden="true"></i></button>
                                             </div>
-
-
                                         {% endif %}
                                         </div>
                                     </div>
                                 </div>
                                 <!-- СЕО -->
-                                <div class="card">
+                                <div class="card card-primary">
                                     <div class="card-header">
                                         <h5 class="m-0">SEO:</h5>
                                     </div>
@@ -92,156 +83,10 @@
                                         {% bootstrap_form seo_form %}
                                     </div>
                                 </div>
-
-
-
-
-
                                 <button class="btn btn-primary" type="submit">
                                     {% if edit %} Зберегти зміни {% else %}Добавити фільм{% endif %}</button>
                                 </form>
-<!-- Скрипт відображення загруженого фото "Головна картинка" -->
-<script>
-          const status = document.querySelector('div.mb-3 input[type="file"][name="big_photo"]');
-          const conteyner = status.closest('.mb-3');
-
-          if (window.FileList && window.File && window.FileReader) {
-            document.getElementById('id_big_photo').addEventListener('change', event => {
-              const file = event.target.files[0];
-
-              if (!file.type.match('image.*')) {
-                status.textContent = 'Error: The selected file does not appear to be an image.';
-                return;
-              }
-
-              const reader = new FileReader();
-              reader.addEventListener('load', event => {
-                let existing_img = conteyner.querySelector('img');
-
-                if (status && !existing_img) {
-                  let new_img = document.createElement('img');
-                  new_img.src = event.target.result;
-                  new_img.classList.add("form-control");
-                  new_img.style.width = '150px';
-                  new_img.style.height = '150px';
-                  status.classList.remove("mb-3");
-                  status.classList.add("card");
-                  status.parentNode.insertBefore(new_img, status);
-
-                } else {
-                  existing_img.src = event.target.result;
-                }
-              });
-
-              reader.readAsDataURL(file);
-            });
-          }
-        </script>
-<!-- Скрипт добавляння нового обєкту в формсет, загрузка фото до галереї" -->
-<script>
-                const totalForm = document.getElementById('id_form-TOTAL_FORMS')
-                const gallery = document.getElementById('gallery');
-                const amount = document.getElementsByClassName('card col')
-                const butt = document.getElementsByClassName('delete-button')[0];
-
-                //вішаємо подію на кожен інпут у всіх тегах з класом 'card col'
-                for (let i = 0; i < amount.length; i++) {
-                    img_inp = amount[i].querySelector('input[type="file"]');
-                    img_inp.addEventListener('change', handleFileChange);
-                };
-
-                //вішаємо подію на кожен хрестик видалення в класі 'card col'
-                for (let i = 0; i < amount.length; i++) {
-                  // Отримуємо елемент кнопка
-                  const button = amount[i].querySelector('button');
-                  // Додаємо обробник події натискання на кнопку
-                  button.addEventListener('click', delete_img);
-                };
-
-
-
-                // Функція відображення доданої картинки
-                function handleFileChange(event) {
-                    const file = event.target.files[0];
-                    let existing_img = event.target.parentNode.querySelector('img');
-
-                    const reader2 = new FileReader();
-                    reader2.addEventListener('load', event2 => {
-                        const formCount = amount.length
-                        if (existing_img) {
-                            // Якщо div уже містить тег img то тільки обновляю адресу картинки
-                            existing_img.src = event2.target.result;
-                        }else{
-                            addNewInput()
-                             /*добавлення та відображення картинки*/
-                            let new_img = document.createElement('img');
-                            new_img.src = event2.target.result;
-                            new_img.style.width = '150px';
-                            new_img.style.height = '150px';
-                            event.target.parentNode.insertBefore(new_img, event.target.nextSibling)
-                            new_butt = butt.cloneNode(true)
-                            new_butt.addEventListener('click', delete_img)
-                            event.target.parentNode.insertBefore(new_butt, event.target.nextSibling)
-                        }
-                    })
-                    reader2.readAsDataURL(file);
-                }
-                // Добавлення нового інпуту
-                function addNewInput() {
-                    const formCount = amount.length
-                    const inputId = `form-${formCount}-photo`;
-                    const newInput = document.createElement('input');
-                    newInput.type = 'file';
-                    newInput.name = `form-${formCount}-photo`;
-                    newInput.accept = 'image/*';
-                    newInput.id = inputId;
-                    let new_div = document.createElement('div');
-                    new_div.setAttribute('class', 'card col');
-                    new_div.setAttribute('id', `form-${formCount}`);
-                    new_div.appendChild(newInput);
-                    newInput.addEventListener('change', handleFileChange);
-                    gallery.append(new_div)
-                    totalForm.setAttribute('value', formCount)
-                }
-
-                //Скрипт хрестика для видалення картинки"
-                function delete_img(event) {
-
-                  let parent_tag = event.target.parentNode.parentNode; //.querySelector('input[type="file"]');
-
-                  const hiden_id = parent_tag.querySelector('input[type="hidden"]');
-                  if (hiden_id){gallery.append(hiden_id)};
-                  parent_tag.parentNode.removeChild(parent_tag);
-                  const del = document.createElement('input');
-                  del.type="hidden";
-                  del.name=`form-${hiden_id.id.split("-")[1]}-DELETE`;
-                  //console.log(hiden_id.id.split("-")[1])
-                  del.value="on";
-                  del.id=`id_form-${hiden_id.id.split("-")[1]}-DELETE`;
-                  gallery.append(del)
-
-                };
-            </script>
-   <!-- Скрипт хрестика для видалення картинки" -->
-<script>
-   const divs = document.getElementsByClassName('card col');
-// Перебираємо кожен елемент <div>
-/*for (let i = 0; i < divs.length; i++) {
-  const div = divs[i];
-  // Отримуємо елемент зображення
-  const image = div.querySelector('img');
-  // Створюємо кнопку з хрестиком
-  const button = div.querySelector('button');
-  // Додаємо обробник події натискання на кнопку
-  button.addEventListener('click', delete_img);
-    // Видаляємо елемент <div> зображення
-
-}*/
-</script>
-
-                            </div>
-
-
+                  </div>
                         </div>
                     <!-- /.card -->
                     </div>

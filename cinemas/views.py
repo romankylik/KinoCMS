@@ -1,3 +1,5 @@
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -32,60 +34,70 @@ def list_films(request):
     }
     return render(request, 'cinemas/list_films.html', context=context)
 def film_edit(request, pk):
+    # інстанс фільму який редагуємо
     film = get_object_or_404(Films, pk=pk)
     film_form = AddFilm(instance=film)
     seo_form = AddSEO(instance=film.seo)
-
     factory = modelformset_factory(Photo, fields=('photo',), can_delete=True, extra=0)
     photoset = factory(queryset=Photo.objects.filter(gallery=film.gallery))
 
     if request.method == 'POST':
+        film_form = AddFilm(request.POST, request.FILES, instance=film)
+        seo_form = AddSEO(request.POST, request.FILES, instance=film.seo)
         photoset = factory(request.POST, request.FILES, queryset=Photo.objects.filter(gallery=film.gallery))
-
-        if photoset.is_valid():
-            print(photoset.errors)
+        if all([film_form.is_valid(), seo_form.is_valid(), photoset.is_valid()]):
+            #обновляємо фото
             for form in photoset:
                 if form.cleaned_data.get('DELETE'):
+                    pre_delete.send(sender=Photo,
+                                    instance=form.instance)  # Відправити сигнал pre_delete для видалення медіа файлу
                     form.instance.delete()
                 else:
-                    form.instance.gallery = film.gallery
-                    form.save()
-        else:
-            print(photoset.errors)
+                    if form.instance.photo:
+                        form.instance.gallery = film.gallery
+                        form.save()
+            #Зберігаємо сео та фільм
+            seo_form.save()
+            film_form.save()
+
         return redirect('listfilms')
 
-
+    #Видалення медіа файлу з папки при видаленні обєтку Photo
+    @receiver(pre_delete, sender=Photo)
+    def delete_photo(sender, instance, **kwargs):
+        # Виконати дії для видалення медіа файлу, пов'язаного з фото
+        if instance.photo:
+            instance.photo.delete()
     context = {
         'film_form': film_form,
         'seo_form': seo_form,
         'photoset': photoset,
-        'title': "F i l m",
-
+        'title': f'{film.name}',
         'edit': True,
         'pk': pk
     }
     return render(request, 'cinemas/add_film.html', context=context)
+def prototyp():
+    ...
 
 @login_required
-def add_film(request, inst_f = None):
+def add_film(request):
     factory = modelformset_factory(Photo, fields=('photo',), can_delete=True, extra=1)
     if request.method == 'POST':
-        film_form = AddFilm(request.POST, request.FILES, instance=inst_f)
+        film_form = AddFilm(request.POST, request.FILES)
         photoset = factory(request.POST, request.FILES)
         seo_form = AddSEO(request.POST, request.FILES)
-        print(film_form.is_valid())
-        print(seo_form.is_valid())
-        if film_form.is_valid() and seo_form.is_valid() and photoset.is_valid():
+        if all([film_form.is_valid(), seo_form.is_valid(), photoset.is_valid()]):
             gallery, created = Gallery.objects.get_or_create(name=f'film_{film_form.instance.name}')# назва галереї буде film_назва_дата створення
             for form in photoset:
-                form.instance.gallery = gallery
-                form.save()
+                if form.instance.photo:
+                    form.instance.gallery = gallery
+                    form.save()
             film_form.instance.gallery = gallery
             seo_form.save()
             film_form.instance.seo = seo_form.instance
-            film_id = film_form.save()
-            Gallery.objects.filter(id=gallery.pk).update(name= f'film_id_{film_id.id}')
-            print(gallery.pk)
+            film = film_form.save()
+            Gallery.objects.filter(id=gallery.pk).update(name= f'film_id_{film.id}')
             return redirect('listfilms')
 
     else:
@@ -101,28 +113,113 @@ def add_film(request, inst_f = None):
     return render(request, 'cinemas/add_film.html', context=context)
 @staff_member_required
 def add_cinema(request):
+    factory = modelformset_factory(Photo, fields=('photo',), can_delete=True, extra=1)
+    factory2 = modelformset_factory(Halls, fields=('number', 'content', 'schema_hall', 'photo_banner', 'cinema'), can_delete=True, extra=1)
     if request.method == 'POST':
         cinema_form = AddCinema(request.POST, request.FILES)
-        photo_form = AddPhoto(request.POST, request.FILES)
+        photoset = factory(request.POST, request.FILES)
         seo_form = AddSEO(request.POST, request.FILES)
-        if cinema_form.is_valid() and seo_form.is_valid():
-            gallery, created = Gallery.objects.get_or_create(name=f'cinema{cinema_form.instance.pk}')# назва галереї буде film+id фільма
-            photo_form.instance.gallery = gallery
+        if all([cinema_form.is_valid(), seo_form.is_valid(), photoset.is_valid()]):
+            gallery, created = Gallery.objects.get_or_create(name=f'film_{cinema_form.instance.name}')# назва галереї буде film_назва_дата створення
+            for form in photoset:
+                if form.instance.photo:
+                    form.instance.gallery = gallery
+                    form.save()
             cinema_form.instance.gallery = gallery
-            photo_form.save()
             seo_form.save()
             cinema_form.instance.seo = seo_form.instance
-            cinema_form.save()
+            cinema = cinema_form.save()
+            Gallery.objects.filter(id=gallery.pk).update(name=f'cinema_id_{cinema.id}')
             return redirect('home')
-
     else:
-        cinema_form = AddFilm()
+        cinema_form = AddCinema()
         seo_form = AddSEO()
-        photo_form = AddPhoto()
+        photoset = factory(queryset=Photo.objects.none())
+        hallset = factory2(queryset=Halls.objects.all())
     context = {
         'cinema_form': cinema_form,
         'seo_form': seo_form,
-        'photo_form': photo_form,
+        'photoset': photoset,
+        'hallset' : hallset,
         'title': "C i n e m a",
     }
     return render(request, 'cinemas/add_cinema.html', context=context)
+
+def add_hall(request):
+    factory = modelformset_factory(Photo, fields=('photo',), can_delete=True, extra=1)
+    if request.method == 'POST':
+        hall_form = AddHall(request.POST, request.FILES)
+        photoset = factory(request.POST, request.FILES)
+        seo_form = AddSEO(request.POST, request.FILES)
+        if all([hall_form.is_valid(), seo_form.is_valid(), photoset.is_valid()]):
+            gallery, created = Gallery.objects.get_or_create(name=f'Hall_{hall_form.instance.number}')# назва галереї буде film_назва_дата створення
+            for form in photoset:
+                if form.instance.photo:
+                    form.instance.gallery = gallery
+                    form.save()
+            hall_form.instance.gallery = gallery
+            seo_form.save()
+            hall_form.instance.seo = seo_form.instance
+            # обєкт кінотеатр треба виправити
+            cinema, cin_created = Cinemas.objects.get_or_create(name=f'Hall_{hall_form.instance.number}')
+            hall_form.instance.cinema= cinema
+            hall_id = hall_form.save()
+            #Gallery.objects.filter(id=gallery.pk).update(name= f'Hall_id_{hall_id.id}')
+            return redirect('listfilms')
+
+    else:
+        hall_form = AddHall()
+        seo_form = AddSEO()
+        photoset = factory(queryset=Photo.objects.none())
+    context = {
+        'hall_form': hall_form,
+        'seo_form': seo_form,
+        'photoset': photoset,
+        'title': "H a l l",
+    }
+    return render(request, 'cinemas/add_hall.html', context=context)
+def hall_edit(request, pk):
+    # інстанс фільму який редагуємо
+    hall = get_object_or_404(Halls, pk=pk)
+    hall_form = AddHall(instance=hall)
+    seo_form = AddSEO(instance=hall.seo)
+    factory = modelformset_factory(Photo, fields=('photo',), can_delete=True, extra=0)
+    photoset = factory(queryset=Photo.objects.filter(gallery=hall.gallery))
+
+    if request.method == 'POST':
+        hall_form = AddHall(request.POST, request.FILES, instance=hall)
+        seo_form = AddSEO(request.POST, request.FILES, instance=hall.seo)
+        photoset = factory(request.POST, request.FILES, queryset=Photo.objects.filter(gallery=hall.gallery))
+        if all([hall_form.is_valid(), seo_form.is_valid(), photoset.is_valid()]):
+            #обновляємо фото
+            for form in photoset:
+                if form.cleaned_data.get('DELETE'):
+                    pre_delete.send(sender=Photo,
+                                    instance=form.instance)  # Відправити сигнал pre_delete для видалення медіа файлу
+                    form.instance.delete()
+                else:
+                    if form.instance.photo:
+                        form.instance.gallery = hall.gallery
+                        form.save()
+            #Зберігаємо сео та фільм
+            seo_form.save()
+            hall_form.save()
+
+        return redirect('listfilms')
+
+    #Видалення медіа файлу з папки при видаленні обєтку Photo
+    @receiver(pre_delete, sender=Photo)
+    def delete_photo(sender, instance, **kwargs):
+        # Виконати дії для видалення медіа файлу, пов'язаного з фото
+        if instance.photo:
+            instance.photo.delete()
+    context = {
+        'film_form': hall_form,
+        'seo_form': seo_form,
+        'photoset': photoset,
+        'title': f'{hall.number}',
+        'edit': True,
+        'pk': pk
+    }
+    return render(request, 'cinemas/add_hall.html', context=context)
+

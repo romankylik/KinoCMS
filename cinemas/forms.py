@@ -45,11 +45,10 @@ class AddCinema(forms.ModelForm):
 
     class Meta:
         model = Cinemas
-        fields = ['name', 'content', 'logo', 'conditions', 'photo_banner', 'address', 'coordinates']
+        fields = ['name', 'content', 'logo', 'conditions', 'photo_banner']
         widgets = {
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'conditions': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
 class AddHall(forms.ModelForm):

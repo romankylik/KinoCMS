@@ -15,33 +15,37 @@
 
                                 {# Початок #}
 
-                                <form action="{% if edit %}{% url 'cinema_edit' pk %}
-                                                {% else %}{% url 'addcinema' %}{% endif %}"
+                                <form action="{% if edit %}{% url 'hall_edit' pk %}
+                                                {% else %}{% url 'addhall' %}{% endif %}"
                                       method="post" enctype="multipart/form-data">
                                 <!-- Поля фільму -->
                                 {% csrf_token %}
-                                {% bootstrap_field cinema_form.name %}
-                                {% bootstrap_field cinema_form.content %}
-                                {% bootstrap_field cinema_form.conditions %}
+                                {% bootstrap_field hall_form.number %}
+                                {% bootstrap_field hall_form.content %}
                                 <div class="row">
                                     <div class="card-container col-md-2">
-                                        <label class="form-label" for="id_logo">Логотип</label>
+                                        <label class="form-label" for="id_schema_hall">Схема залу</label>
                                         <br>
-                                        {% if cinema_form.instance.logo %}
-                                            <img src="{{ cinema_form.instance.logo.url }}">
+                                        {% if hall_form.instance.schema_hall %}
+                                            <img src="{{ hall_form.instance.schema_hall.url }}" >
                                         {% endif %}
-                                        <input type="file" name="logo" accept="image/*"  id="id_logo">
+                                        <input type="file" name="schema_hall" accept="image/*" id="id_schema_hall">
                                     </div>
-                                    <div class="card-container col-md-2">
-                                        <label class="form-label" for="id_photo_banner">Фото верхнього банеру</label>
+                                    <div class="card-container col-md-2" >
+                                        <label class="form-label" for="id_photo_banner">Верхній банер</label>
                                         <br>
-                                        {% if cinema_form.instance.photo_banner %}
-                                            <img src="{{ cinema_form.instance.photo_banner.url }}">
+                                        {% if hall_form.instance.photo_banner %}
+                                            <img src="{{ hall_form.instance.photo_banner.url }}">
                                         {% endif %}
-                                        <input type="file" name="photo_banner" accept="image/*"  id="id_photo_banner">
-                                    </div>
+                                        <input type="file" name="photo_banner" accept="image/*" id="id_photo_banner">
 
+
+
+                                 </div>
                                 </div>
+
+
+
 
                                 <!-- Галерея картинок -->
                                 <div class="card card-primary">
@@ -52,7 +56,7 @@
                                         <div class="row" id="gallery">
                                         {{ photoset.management_form }}
                                     <!-- Перевірка чи вже є завантаженні зображення -->
-                                        {% if cinema_form.instance.gallery and  photoset.total_form_count %}
+                                        {% if hall_form.instance.gallery and  photoset.total_form_count %}
                                             {% for ph in photoset.forms %}
                                                 <div class="card-container col-md-2" id="form-{{ forloop.counter0 }}">
                                                     {{ ph.id }}
@@ -67,18 +71,10 @@
                                         {% else %}
                                             <div class="card-container col-md-2" id="form-0">
                                                 <input type="file" name="form-0-photo" accept="image/*" id="id_form-0-photo">
+
                                             </div>
                                         {% endif %}
                                         </div>
-                                    </div>
-                                </div>
-                                <!-- Список залів -->
-                                <div class="card card-primary">
-                                    <div class="card-header">
-                                        <h5 class="m-0">Список Залів:</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        {% bootstrap_formset hallset %}
                                     </div>
                                 </div>
                                 <!-- СЕО -->
@@ -90,8 +86,9 @@
                                         {% bootstrap_form seo_form %}
                                     </div>
                                 </div>
+
                                 <button class="btn btn-primary" type="submit">
-                                    {% if edit %} Зберегти зміни {% else %}Добавити кінотеатр{% endif %}</button>
+                                    {% if edit %} Зберегти зміни {% else %}Добавити зал{% endif %}</button>
                                 </form>
                   </div>
                         </div>
@@ -101,6 +98,8 @@
             </div>
         </section>
     </div>
+
+
 
 
 

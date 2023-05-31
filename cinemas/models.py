@@ -15,7 +15,7 @@ class Films(models.Model):
     type1 = models.BooleanField(verbose_name="2D")
     type2 = models.BooleanField(verbose_name="3D")
     type3 = models.BooleanField(verbose_name="imax")
-    time_create = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
     seo = models.OneToOneField('SEO', on_delete=models.CASCADE)
     gallery = models.OneToOneField('Gallery', on_delete=models.CASCADE)
 
@@ -32,8 +32,8 @@ class Cinemas(models.Model):
     conditions = models.TextField(blank=True, verbose_name="Умови")
     logo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Логотип")
     photo_banner = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Фото банера")
-    address = models.TextField(blank=True, verbose_name="Адреса")
-    coordinates = models.CharField(max_length=255, verbose_name="Координати")
+    #address = models.TextField(blank=True, verbose_name="Адреса")
+    #coordinates = models.CharField(max_length=255, verbose_name="Координати")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
     seo = models.OneToOneField('SEO', on_delete=models.CASCADE)
     gallery = models.OneToOneField('Gallery', on_delete=models.CASCADE)
@@ -46,7 +46,7 @@ class Cinemas(models.Model):
         ordering = ['name']
 
 class Halls(models.Model):
-    number = models.IntegerField(default=0, verbose_name="Номер залу")
+    number = models.IntegerField(verbose_name="Номер залу")
     content = models.TextField(blank=True, verbose_name="Опис")
     schema_hall = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Схема залу")
     photo_banner = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Фото банера")

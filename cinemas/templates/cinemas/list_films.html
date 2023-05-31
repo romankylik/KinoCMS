@@ -4,24 +4,46 @@
 <div class="container-fluid">
             <div class="card card-primary">
               <div class="card-header">
-                <h4 class="card-title">Список фільмів</h4>
+                <h4 class="card-title">Список поточних фільмів</h4>
               </div>
               <div class="card-body">
                 <div class="row">
                     {%  for film in films %}
-                    <div class="col-sm-2" href="">
+                    <div class="card-container col-md-2" href="">
                       <a href="{% url 'film_edit' film.id %}">
-                      <img src="{{ film.big_photo.url }}" class="img-fluid mb-2" alt="photo_film">
-                      {{ film.name }}
+                      <div class="image-wrapper">
+                          <img src="{{ film.big_photo.url }}" alt="photo_film" style="width: 250px; height: 300px">
+                          <div class="film-name">{{ film.name }}</div>
+                      </div>
                       </a>
 
                   </div>
                     {% endfor %}
 
+
+                </div>
+
+              </div>
+            </div>
+
+</div>
+<div class="card-body">
+    <div class="d-grid gap-2">
+    <button class="btn btn-primary btn-block fs-3" onclick="window.location.href='{% url 'addfilm' %}'"  type="button"> <h3>+  Добавити новий фільм</h3></button>
+</div>
+</div>
+<br>
+<div class="container-fluid">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4 class="card-title">Список фільмів які незабаром покажуть</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
                 </div>
               </div>
             </div>
-          </div>
+</div>
 
 {% endblock content %}
 

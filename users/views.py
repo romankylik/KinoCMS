@@ -14,7 +14,7 @@ def register_view(request):
         user_obj = form.save()
         return redirect('login')
     context = {"form": form}
-    return render(request, "users/register.html", context)
+    return render(request, "users/register.html", context=context)
 
 # Create your views here.
 def login_view(request):
@@ -30,7 +30,7 @@ def login_view(request):
     context = {
         "form": form
     }
-    return render(request, "users/login.html", context)
+    return render(request, "users/login.html", context=context)
 
 
 def logout_view(request):
@@ -46,6 +46,7 @@ def edit_users(request):
 
 def list_users(request):
     users = AdvUsers.objects.values('id', 'date_joined', 'date_birth', 'email', 'phone_number', 'last_name', 'first_name', 'username', 'town')
+     #Обєднання імені та фамілії
     for i in users:
         i['last_name'] = i['last_name'] +" " + i.pop('first_name')
         for n in i:

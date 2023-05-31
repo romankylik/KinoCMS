@@ -10,6 +10,7 @@ urlpatterns = [
     path('film/<int:pk>/', film_edit, name='film_edit'),
     path('addfilm/', add_film, name='addfilm'),
     path('addcinema/', add_cinema, name='addcinema'),
+    path('addhall/', add_hall, name='addhall'),
 
 
 ]

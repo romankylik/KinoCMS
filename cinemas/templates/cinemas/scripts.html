@@ -9,3 +9,88 @@
 <script src="{% static 'cinemas/js/adminlte.min.js' %}"></script>
       {# Іконки до кожного пункту меню #}
 <script src="https://kit.fontawesome.com/ef16f8a4f6.js" crossorigin="anonymous"></script>
+<!-- Скрипт обробки фотографій на сторінці добавлення, редагування" -->
+<script>
+                const totalForm = document.getElementById('id_form-TOTAL_FORMS')
+                const gallery = document.getElementById('gallery');
+                const amount = document.getElementsByClassName('card-container col-md-2')
+                let del_form = 0; //кількість видалених полів
+
+                //вішаємо подію на кожен інпут у всіх тегах з класом 'card col', для відображення картинки
+                for (let i = 0; i < amount.length; i++) {
+                    img_inp = amount[i].querySelector('input[type="file"]');
+                    img_inp.addEventListener('change', handleFileChange);
+                }
+                //вішаємо подію на кожен хрестик видалення в класі 'card col'
+                for (let i = 0; i < amount.length; i++) {
+                  // Отримуємо елемент кнопка
+                  const button = amount[i].querySelector('button');
+                  // Додаємо обробник події натискання на кнопку
+                  if (button){button.addEventListener('click', delete_img);}
+                }
+                // Функція відображення доданої картинки
+                function handleFileChange(event) {
+                    const file = event.target.files[0];
+                    let existing_img = event.target.parentNode.querySelector('img');
+
+                    const reader2 = new FileReader();
+                    reader2.addEventListener('load', event2 => {
+                        const formCount = amount.length;
+
+                        if (existing_img) {
+                            // Якщо div уже містить тег img то тільки обновляю адресу картинки
+                            existing_img.src = event2.target.result;
+                        }else{
+                             /*добавлення та відображення картинки*/
+                            let new_img = document.createElement('img');
+                            new_img.src = event2.target.result;
+                            event.target.parentNode.insertBefore(new_img, event.target.nextSibling);
+                            if(event.target.parentNode.parentNode.id == 'gallery') {
+                                addNewInput();
+                                event.target.name = `form-${event.target.parentNode.id.split('-')[1]}-photo`;
+                                new_butt = document.createElement('button');
+                                new_butt.type = 'button';
+                                new_butt.classList = "delete-button";
+                                new_butt.append(' x ');
+                                new_butt.addEventListener('click', delete_img);
+                                event.target.parentNode.append(new_butt);
+                            }
+                        }
+                    });
+                    reader2.readAsDataURL(file);
+                }
+                // Добавлення нового інпуту
+                function addNewInput() {
+                    const formCount = Number(amount[amount.length-1].id.split("-")[1])+1;
+                    const inputId = `form-${formCount}-photo`;
+                    const newInput = document.createElement('input');
+                    newInput.type = 'file';
+                    newInput.name = `form-${formCount}-photo`;
+                    newInput.accept = 'image/*';
+                    newInput.id = inputId;
+                    let new_div = document.createElement('div');
+                    new_div.setAttribute('class', 'card-container col-md-2');
+                    new_div.setAttribute('id', `form-${formCount}`);
+                    new_div.appendChild(newInput);
+                    newInput.addEventListener('change', handleFileChange);
+                    gallery.append(new_div);
+                    total = parseInt(totalForm.value) +1;
+                    totalForm.setAttribute('value', total );
+                }
+                //Скрипт хрестика для видалення картинки"
+                function delete_img(event) {
+                  let parent_tag = event.target.parentNode;
+                  const hiden_id = parent_tag.querySelector('input[type="hidden"]');
+                  if (hiden_id){
+                      gallery.append(hiden_id);
+                      const del = document.createElement('input');
+                      del.type="hidden";
+                      del.name=`form-${hiden_id.id.split("-")[1]}-DELETE`;
+                      del.value="on";
+                      del.id=`id_form-${hiden_id.id.split("-")[1]}-DELETE`;
+                      gallery.append(del);
+                    }
+                  gallery.removeChild(parent_tag);
+                  del_form = gallery.querySelectorAll('[id^="id_form-"][id$="-DELETE"]').length;
+                }
+</script>

@@ -1,0 +1,53 @@
+{% extends 'cinemas/base.html' %}
+{% load bootstrap5 %}
+{% block content %}
+<div class="container-fluid">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4 class="card-title">Список новин</h4>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                    <thead class="thead">
+                        <tr><th scope="col">Назва</th>
+                            <th scope="col">Дата створення</th>
+                            <th scope="col">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for new in news %}
+                        <tr>
+
+                            <td>{{ new.name }}</td>
+                            <td>{{ new.date_create }}</td>
+                            <td>{{ new.status}}</td>
+                            <td><button onclick="window.location.href='{% url 'news_edit' new.id %}'"  type="button">
+                                <i class="fa-solid fa-pen" title="Edit"></i>
+                            </button></td>
+                            <td><button type="submit">
+                                <i class="fa-solid fa-trash" title="Delit"></i>
+                            </button></td>
+
+                        </tr>
+                      {% endfor %}
+
+                    <!-- Додайте інші рядки за потребою -->
+                    </tbody>
+
+                </table>
+
+              </div>
+            </div>
+
+</div>
+    <br>
+<div class="card-body">
+    <div class="d-grid gap-2">
+    <button class="btn btn-primary btn-block fs-3" onclick="window.location.href='{% url 'addnews' %}'"  type="button"> <h3>+  Добавити новину </h3></button>
+</div>
+</div>
+
+
+{% endblock content %}
+
